@@ -94,7 +94,7 @@ def detailCorong(request, slugInput):
 	corong	= Bangunan_corong.objects.get(slug=slugInput)
 	context = {
 		'Tittle':'SISTEM INFORMASI JARINGAN IRIGASI',
-		'Heading':'Selamat Datang',
+		'Heading':'Sistem Informasi Jaringan Irigasi Danayuda',
 		'Subheading':'Menampilkan informasi bangunan irigasi',
 		'Corong': corong
 	}
@@ -105,7 +105,7 @@ def detailSadap(request, slugInput):
 	sadap	= Bangunan_sadap.objects.get(slug=slugInput)
 	context = {
 		'Tittle':'SISTEM INFORMASI JARINGAN IRIGASI',
-		'Heading':'Selamat Datang',
+		'Heading':'Sistem Informasi Jaringan Irigasi Danayuda',
 		'Subheading':'Menampilkan informasi bangunan irigasi',
 		'Sadap': sadap
 	}
@@ -116,7 +116,7 @@ def detailBendung(request, slugInput):
 	bendung	= Bangunan_bendung.objects.get(slug=slugInput)
 	context = {
 		'Tittle':'SISTEM INFORMASI JARINGAN IRIGASI',
-		'Heading':'Selamat Datang',
+		'Heading':'Sistem Informasi Jaringan Irigasi Danayuda',
 		'Subheading':'Menampilkan informasi bangunan irigasi',
 		'Bendung': bendung
 	}
