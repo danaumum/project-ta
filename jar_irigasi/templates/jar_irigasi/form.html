@@ -1,0 +1,52 @@
+{% extends "base1.html" %}
+
+{% load crispy_forms_tags %}
+
+
+
+{% block header %}
+<h1 class="display-4">{{Heading}}</h1>
+<p class="lead">{{Subheading}}</p>
+{% endblock header %}
+
+{% block content %}
+<div class="container">
+	<br>
+	<form class="site-form" method="post" action="{% url 'jar_irigasi:laporan'%}" enctype="multipart/form-data">
+		<table>
+		{%csrf_token%}
+    	
+		{{ form|crispy }}
+    	</table>
+    	<input class="btn btn-primary" type="submit" value="Submit">
+    </form>
+</div>
+<script>
+$(document).ready(function(){
+	function getLocation() {
+	  if (navigator.geolocation) {
+		var a = navigator.geolocation.getCurrentPosition(showPosition);
+		console.log(a);
+		
+	  } else {
+		$('#id_lokasiKerusakan').val("Geolocation is not supported by this browser.");
+	  }
+	}
+
+	function showPosition(position) {
+	  
+	  $('#id_lokasiKerusakan').val(position.coords.longitude+','+position.coords.latitude);
+	}
+	
+	getLocation();
+
+});
+
+
+
+</script>
+
+{% endblock content %}
+
+
+

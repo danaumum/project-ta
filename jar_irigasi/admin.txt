@@ -1,0 +1,7 @@
+class CorongAdmin (admin.ModelAdmin):
+    list_display = ['nama', 'debit', 'luas_terairi', 'letak','latitude', 'longitude']
+    list_filter = []
+    ordering = ['nama']
+    search_fields = ['nama']
+    list_per_page = 5
+    readonly_fields = ['slug']

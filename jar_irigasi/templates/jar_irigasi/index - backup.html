@@ -1,0 +1,444 @@
+{% extends "base1.html" %}
+{% load static %}
+
+
+
+
+{% block header %}
+<h1 class="display-4">{{Tittle}}</h1>
+<p class="lead"></p>
+{% endblock header %}
+
+{% block content %}
+<div style="margin-top">
+  	<div class="jumbotron">
+  	<h1>Peta Sebaran Bangunan Pembagi</h1>
+  	<hr>
+	<div id="map" class="map"></div>
+    <div id="mouse-position"></div>
+                                <div id="popup" class="ol-popup" style="display: none">
+                                    <div style="z-index: 5; background-color: #5e5e5e;position: absolute;top: 1px; left: 1px; border-radius: 10px; opacity: 0.5; filter: alpha(opacity=50);display: none" id="loader-overlay">
+                                        <div class="loader" id="loader">
+                                            <div class="rect1"></div>
+                                            <div class="rect2"></div>
+                                            <div class="rect3"></div>
+                                            <div class="rect4"></div>
+                                            <div class="rect5"></div>
+                                        </div>
+                                    </div>
+                                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                                    <div id="popup-content">
+
+                                        <div class="">
+                                            <div class="col-xs-12" id="feature-popup-content">
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                              </div>
+								
+	<div class="modal hide" id="my_modal">
+		<div class="modal-header">
+		<button class="close" data-dismiss="modal">×</button>
+		<h3>Modal header</h3>
+		</div>
+		<div class="modal-body">
+			<p>some content</p>
+			<img src="" class="img-fluid">
+		</div>
+	</div>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			...
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+</div>
+
+    <script type="text/javascript">
+		
+	
+	    var popupContainer = document.getElementById('popup');
+		
+	//Tampilkan koordinat posisi mouse di peta
+	var mousePositionControl = new ol.control.MousePosition({
+        coordinateFormat: ol.coordinate.createStringXY(4),
+        projection: 'EPSG:3857',
+        // comment the following two lines to have the mouse position
+        // be placed within the map.
+        className: 'custom-mouse-position',
+        target: document.getElementById('mouse-position'),
+        undefinedHTML: '&nbsp;'
+    });
+	
+	var style = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.6)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3',
+          width: 1
+        }),
+		image: new ol.style.Circle({
+			radius: 7,
+			fill: new ol.style.Fill({color: 'black'}),
+			stroke: new ol.style.Stroke({
+			  color: [255,0,0], width: 1
+			})
+		}),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        })
+      });
+	  
+	  var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+        element: popupContainer
+		})
+	);
+	
+	var view = new ol.View({
+          //center:  [13083573.25751705, -295964.1735202025],
+		  center: ol.proj.transform([109.2931900,-7.4055830], ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')),
+
+          zoom: 15
+        });
+	
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        view: view,
+		controls: ol.control.defaults({
+                attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+                    collapsible: false
+                })
+            }).extend([mousePositionControl]),
+		overlays: [overlay],
+      });
+	  
+	  //console.log(map.getView().getProjection());
+	  
+		let sadapsFeatures = [];
+	  
+	  var Sadaps = JSON.parse({{ sadap_json|safe  }});
+	  console.log(Sadaps);
+	  
+		
+		for (x in Sadaps) {
+			sadapsFeatures.push(
+				{
+					"type":"Feature",
+					"geometry":{
+						"type":"Point",
+						"coordinates":ol.proj.transform([Sadaps[x].fields.longitude,Sadaps[x].fields.latitude], ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'))
+					},
+					"properties": {
+						"nama": Sadaps[x].fields.nama,
+						"debit": Sadaps[x].fields.debit,
+						"luas_terairi": Sadaps[x].fields.luas_terairi,
+						"letak": Sadaps[x].fields.letak,
+						"category": Sadaps[x].fields.category,
+						"slug": Sadaps[x].fields.slug,
+						"foto1": Sadaps[x].fields.foto1,
+						"foto2": Sadaps[x].fields.foto2,
+						"foto3": Sadaps[x].fields.foto3,
+						"latitude": Sadaps[x].fields.latitude,
+						"longitude": Sadaps[x].fields.longitude
+					 }
+					
+				}
+			);
+		}
+		
+		console.log(sadapsFeatures);
+		
+		let bendungsFeatures = [];
+	  
+	  var Bendungs = JSON.parse({{ bendung_json|safe  }});
+	  // console.log(Sadaps);
+	  
+		
+		for (x in Bendungs) {
+			bendungsFeatures.push(
+				{
+					"type":"Feature",
+					"geometry":{
+						"type":"Point",
+						"coordinates":ol.proj.transform([Bendungs[x].fields.longitude,Bendungs[x].fields.latitude], ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'))
+					},
+					"properties": {
+						"nama": Bendungs[x].fields.nama,
+						"debit": Bendungs[x].fields.debit,
+						"luas_terairi": Bendungs[x].fields.luas_terairi,
+						"letak": Bendungs[x].fields.letak,
+						"category": Bendungs[x].fields.category,
+						"slug": Bendungs[x].fields.slug,
+						"foto1": Bendungs[x].fields.foto1,
+						"foto2": Bendungs[x].fields.foto2,
+						"foto3": Bendungs[x].fields.foto3,
+						"latitude": Bendungs[x].fields.latitude,
+						"longitude": Bendungs[x].fields.longitude
+					 }
+					
+				}
+			);
+		}
+		
+		let corongsFeatures = [];
+	  
+	  var Corongs = JSON.parse({{ corong_json|safe  }});
+	  console.log(Corongs);
+	  
+		
+		for (x in Corongs) {
+			corongsFeatures.push(
+				{
+					"type":"Feature",
+					"geometry":{
+						"type":"Point",
+						"coordinates":ol.proj.transform([Corongs[x].fields.longitude,Corongs[x].fields.latitude], ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'))
+					},
+					"properties": {
+						"nama": Corongs[x].fields.nama,
+						"debit": Corongs[x].fields.debit,
+						"luas_terairi": Corongs[x].fields.luas_terairi,
+						"letak": Corongs[x].fields.letak,
+						"category": Corongs[x].fields.category,
+						"slug": Corongs[x].fields.slug,
+						"foto1": Corongs[x].fields.foto1,
+						"foto2": Corongs[x].fields.foto2,
+						"foto3": Corongs[x].fields.foto3,
+						"latitude": Corongs[x].fields.latitude,
+						"longitude": Corongs[x].fields.longitude
+					 }
+					
+				}
+			);
+		}
+		
+		//console.log(sadapsFeatures);
+		
+		var geojsonObject = {
+                    'type': 'FeatureCollection',
+                    'crs': {
+                        'type': 'name',
+                        'properties': {
+                            'name': 'EPSG:3857'
+                        }
+                    },
+                    "features":sadapsFeatures
+        }
+		
+		console.log(geojsonObject);
+		
+		
+		var sadapLayerSource = new ol.source.Vector({
+            features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+        });
+		
+		var layer_sadap = new ol.layer.Vector({
+            source: sadapLayerSource,
+            style: new ol.style.Style({
+				fill: new ol.style.Fill({
+				  color: 'rgba(255, 255, 255, 0.6)'
+				}),
+				stroke: new ol.style.Stroke({
+				  color: '#319FD3',
+				  width: 1
+				}),
+				image: new ol.style.Circle({
+					radius: 7,
+					fill: new ol.style.Fill({color: 'white'}),
+					stroke: new ol.style.Stroke({
+					  color: [0,255,0], width: 1
+					})
+				})
+			})
+        });
+		
+		map.addLayer(layer_sadap);
+		
+		//
+		var geojsonObjectBendungs = {
+                    'type': 'FeatureCollection',
+                    'crs': {
+                        'type': 'name',
+                        'properties': {
+                            'name': 'EPSG:3857'
+                        }
+                    },
+                    "features":bendungsFeatures
+        }
+		
+		var bendungLayerSource = new ol.source.Vector({
+            features: (new ol.format.GeoJSON()).readFeatures(geojsonObjectBendungs)
+        });
+		
+		var layer_bendung = new ol.layer.Vector({
+            source: bendungLayerSource,
+            style: style
+        });
+		
+		map.addLayer(layer_bendung);
+		
+		//
+		var geojsonObjectCorongs = {
+                    'type': 'FeatureCollection',
+                    'crs': {
+                        'type': 'name',
+                        'properties': {
+                            'name': 'EPSG:3857'
+                        }
+                    },
+                    "features":corongsFeatures
+        }
+		
+		var corongLayerSource = new ol.source.Vector({
+            features: (new ol.format.GeoJSON()).readFeatures(geojsonObjectCorongs)
+        });
+		
+		var layer_corong = new ol.layer.Vector({
+            source: corongLayerSource,
+            style: new ol.style.Style({
+				fill: new ol.style.Fill({
+				  color: 'rgba(255, 255, 255, 0.6)'
+				}),
+				stroke: new ol.style.Stroke({
+				  color: '#319FD3',
+				  width: 1
+				}),
+				image: new ol.style.Circle({
+					radius: 7,
+					fill: new ol.style.Fill({color: 'yellow'}),
+					stroke: new ol.style.Stroke({
+					  color: [0,0,255], width: 1
+					})
+				})
+			})
+        });
+		
+		map.addLayer(layer_corong);
+		
+		
+		var select = new ol.interaction.Select({
+            condition: ol.events.condition.click,
+        });
+        map.addInteraction(select);
+		
+		var selectedFeatures = select.getFeatures();
+//
+        select.on('select', function(e) {
+
+            console.log('features',selectedFeatures);
+
+		
+
+            var theFeature = selectedFeatures.item(0);
+            var coordinate = theFeature.getGeometry().getCoordinates();
+			var data = "";
+			
+			var category = theFeature.get("category");
+			console.log(category);
+			
+			//if(category.toLowerCase().includes("sadap")){
+				data = '<table>'+
+				'<tr><td>Nama</td><td>:</td><td>'+theFeature.get("nama")+'</td></tr>'+
+				'<tr><td>Debit</td><td>:</td><td>'+theFeature.get("debit")+'</td></tr>'+
+				'<tr><td>Luas terairi</td><td>:</td><td>'+theFeature.get("luas_terairi")+'</td></tr>'+
+				'<tr><td>Letak</td><td>:</td><td>'+theFeature.get("letak")+'</td></tr>'+
+				'</table>'+
+				'<div class="popup-image-container"><a class="img-thumbnail" id="lauch2" data-target="#exampleModal" href="#my_modal" data-toggle="modal" img-name="'+theFeature.get("foto1")+'"><img id="lauch2-img" src="../media/'+theFeature.get("foto1")+'" width="100px"></a><img src="../media/'+theFeature.get("foto2")+'" width="100px"><img src="../media/'+theFeature.get("foto3")+'" width="100px"></div>'
+				;
+			//}
+			
+			
+			
+			$('#feature-popup-content').html(data);
+
+            view.animate({
+                center: [coordinate[0],coordinate[1]-2],
+                duration: 2000
+            });
+
+			
+			$('#popup').show();
+            overlay.setPosition(coordinate);
+
+
+        });
+
+        
+		$('#my_modal').on('show.bs.modal', function(e) {
+
+			//get data-id attribute of the clicked element
+			var img = $(e.relatedTarget).data('img-name');
+
+			//populate the textbox
+			$(e.currentTarget).find('img').attr('src','../media/'+img);
+		});
+		
+		
+		$(document).ready(function(){
+			$(document).on('click','#lauch2-img', function(){
+			alert('ok');
+			var imgname = $(this).attr('img-name');
+				$('#exampleModal img').attr('src','../media/'+imgname);
+				$('#exampleModal').modal('show');
+			});
+		});
+	  
+	  
+    </script>
+  <img src="{% static "/img/skema.png" %}" class="img-thumbnail">
+</div>
+<div style="margin-top: 100px height:800px">  
+      <p class="display-4">Bendungan</p>
+      {% for bendungs in Bendungs  %}
+      <ul class="list-group">
+      <li class="list-group-item"><a href="{% url 'jar_irigasi:detBendung' bendungs.slug %}">{{bendungs.nama}}</a></li>
+      </ul>
+      {% endfor %}
+      <br>
+    <h3 class="display-4">Bangunan corong</h3>
+      {% for corongs in Corongs  %}
+      <ul class="list-group">
+      <li class="list-group-item"><a href="{% url 'jar_irigasi:detCorong' corongs.slug %}">{{corongs.nama}}</a></li>
+      </ul>
+      {% endfor %}
+
+    <h3 class="display-4">Bangunan sadap</h3>
+      {% for sadaps in Sadaps  %}
+        <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'jar_irigasi:detSadap' sadaps.slug %}">{{sadaps.nama}}</a></li>
+        </ul>
+      {% endfor %}
+</div>
+{% endblock content %}
+
+

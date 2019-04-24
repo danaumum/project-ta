@@ -1,0 +1,13 @@
+.jumbotron{
+	height: 2000px;
+	background-size: cover;
+}
+
+.jumbotron h1{
+	font-size: 0px;
+}
+
+.jumbotron p{
+	font-size: 25px;
+}
+

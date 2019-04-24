@@ -1,0 +1,30 @@
+		//DAS SERAYU
+		var dsayerSource = new ol.source.Vector({
+			format: new ol.format.GeoJSON(),
+			url: 'http://localhost:8000/media/das_serayu.geojson'
+		});
+            //features: (new ol.format.GeoJSON()).readFeatures('../media/das_serayu.geojson')
+        //});
+		
+		var layer_das = new ol.layer.Vector({
+            source: dsayerSource,
+            style: new ol.style.Style({
+				fill: new ol.style.Fill({
+				  color: 'rgba(255, 255, 255, 0.6)'
+				}),
+				stroke: new ol.style.Stroke({
+				  color: '#319FD3',
+				  width: 1
+				}),
+				image: new ol.style.Circle({
+					radius: 7,
+					fill: new ol.style.Fill({color: 'white'}),
+					stroke: new ol.style.Stroke({
+					  color: [0,255,0], width: 1
+					})
+				})
+			})
+        });
+		
+		map.addLayer(layer_das);
+		//

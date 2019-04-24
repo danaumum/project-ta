@@ -1,0 +1,53 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+	   <title>{{Tittle}}</title>
+	   <link rel="stylesheet" type="text/css" href="{%static "vendor/bootstrap/bootstrap.css"%}">
+     <link rel="stylesheet" type="text/css" href="{%static "css/styles.css"%}">
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" >
+  <a class="navbar-brand" href="/">
+  	<img height="50px" src="{% static "/img/logo_unsoed.png" %}">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/jar_irigasi/">Info Jaringan</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/jar_irigasi/laporan/">Laporan Kerusakan</a>
+      </li>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container text-white ">
+      <h1 class="display-4">{{Heading}}</h1>
+      <p class="lead">{{Subheading}}</p>
+    </div>
+  </div>
+	<div class="container-fluid">
+    <div class="container bg-white shadow" style="margin-top:-100px">
+      <div class="row" style="height:400px">
+        <p class="text-justify">Irigasi merupakan upaya yang dilakukan manusia untuk mengairi lahan pertanian. Dalam dunia modern, saat ini sudah banyak model irigasi yang dapat dilakukan manusia. Pada zaman dahulu, jika persediaan air melimpah karena tempat yang dekat dengan sungai atau sumber mata air, maka irigasi dilakukan dengan mengalirkan air tersebut ke lahan pertanian. Namun, irigasi juga biasa dilakukan dengan membawa air dengan menggunakan wadah kemudian menuangkan pada tanaman satu per satu. Untuk irigasi dengan model seperti ini di Indonesia biasa disebut menyiram.</p>
+      </div>
+    </div>		
+	</div>
+
+	<script src="{%static "vendor/jquery/jquery.js"%}" type="text/javascript"></script>
+	<script src="{%static "vendor/popper/popper.js"%}" type="text/javascript"></script>
+	<script src="{%static "vendor/bootstrap/bootstrap.js"%}" type="text/javascript"></script>	
+
+</body>
+</html>
+
